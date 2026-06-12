@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 
 import { SpotifyPlayer } from "../reusable/Player";
 import type { FormData } from "../../App";
+import type { StimulusItem } from "../../api/types";
 import { RadioGroup } from "../reusable/RadioGroup";
 import {
   BACK_BUTTON_CLASSES,
@@ -14,15 +15,12 @@ import {
   scrollToFirstInvalid,
 } from "../../utils/validation";
 
-type Song = {
-  id: number;
-  spotifyId: string;
-  name: string;
-};
-
 type Props = {
-  song: Song;
+  stimulus: StimulusItem;
+  totalStimuli: number;
+  currentIndex: number;
   onSubmit: (musicAnswer: FormData["musicAnswers"][0]) => void;
+  onPlay: (trackId: string, orderIndex: number) => void;
   prevStep: () => void;
 };
 
@@ -65,7 +63,7 @@ const getStep4Errors = (answers: MusicAnswerState) => {
   return errors;
 };
 
-export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
+export const Step4_MusicPlayer = ({ stimulus, totalStimuli, currentIndex, onSubmit, onPlay, prevStep }: Props) => {
   const [answers, setAnswers] = useState<MusicAnswerState>(initialMusicAnswer);
   const [submitted, setSubmitted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -95,7 +93,7 @@ export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center">{song.name}</h2>
+      <h2 className="text-2xl font-bold text-center">{stimulus.title ?? "Música"}</h2>
 
       <p className="text-center text-gray-400">
         Por favor, ouça a música abaixo antes de responder.

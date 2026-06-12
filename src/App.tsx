@@ -12,18 +12,11 @@ type SubmissionStatus = "idle" | "uploading" | "success" | "error"
 export type FormData = {
   hasConsented: boolean
   age: string
+  city: string
+  state: string
   location: string
   institution: string
   sex: string
-  hasConsented: boolean;
-
-  // Step 1
-  age: string;
-  city: string;
-  state: string;
-  location: string;
-  institution: string;
-  sex: string;
 
   // Step 2
   socialMedia: {
@@ -75,7 +68,20 @@ const initialFormData: FormData = {
   socialMedia: { tiktok: false, instagram: false, youtube: false },
   screenTime: "",
   musicTime: "",
-  likert: {},
+  likert: {
+    influence: 0,
+    friends: 0,
+    viral: 0,
+    listenedViral: 0,
+    recommended: 0,
+    multitask: 0,
+    discovery: 0,
+    exclusiveTime: 0,
+    timeDecreased: 0,
+    annoyedFast: 0,
+    recognizePart: 0,
+    playlistsImpacted: 0,
+  },
   musicAnswers: [],
 }
 
@@ -185,13 +191,6 @@ function App() {
     }
   };
 
-  const submitData = async () => {
-    console.log(
-      "DADOS FINAIS DO FORMULÁRIO:",
-      JSON.stringify(formData, null, 2)
-    );
-  };
-
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -252,6 +251,7 @@ function App() {
             currentIndex={currentStimulusIndex}
             onSubmit={handleMusicSubmit}
             onPlay={handlePlay}
+            prevStep={prevStep}
           />
         )
       }

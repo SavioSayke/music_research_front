@@ -21,7 +21,9 @@ type Props = {
   error?: string | null
 }
 
-const questions: { key: string; text: string }[] = [
+type LikertKey = keyof FormData["likert"]
+
+const questions: { key: LikertKey; text: string }[] = [
   {
     key: "influence",
     text: "Sinto minhas decisões e consumos influenciados pelo que vejo nas redes sociais.",
