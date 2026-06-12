@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { Step0_Consent } from "./components/steps/step0";
 import { Step1_UserInfo } from "./components/steps/step1";
 import { Step2_MediaUsage } from "./components/steps/step2";
@@ -26,11 +27,15 @@ const songsToTest = [
 
 export type FormData = {
   hasConsented: boolean;
+
   // Step 1
   age: string;
+  city: string;
+  state: string;
   location: string;
   institution: string;
   sex: string;
+
   // Step 2
   socialMedia: {
     tiktok: boolean;
@@ -39,6 +44,7 @@ export type FormData = {
   };
   screenTime: string;
   musicTime: string;
+
   // Step 3
   likert: {
     influence: number;
@@ -54,6 +60,7 @@ export type FormData = {
     recognizePart: number;
     playlistsImpacted: number;
   };
+
   // Step 4
   musicAnswers: {
     songId: number;
@@ -71,6 +78,8 @@ export type FormData = {
 const initialFormData: FormData = {
   hasConsented: false,
   age: "",
+  city: "",
+  state: "",
   location: "",
   institution: "",
   sex: "",
@@ -104,7 +113,7 @@ function App() {
   };
 
   const nextStep = () => setCurrentStep((prev) => prev + 1);
-  const prevStep = () => setCurrentStep((prev) => prev - 1);
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const handleMusicSubmit = (musicAnswer: FormData["musicAnswers"][0]) => {
     const newMusicAnswers = [...formData.musicAnswers, musicAnswer];
@@ -116,6 +125,7 @@ function App() {
       nextStep();
     }
   };
+
   const submitData = async () => {
     console.log(
       "DADOS FINAIS DO FORMULÁRIO:",
@@ -123,7 +133,6 @@ function App() {
     );
   };
 
-  // Renderiza a etapa atual
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -140,6 +149,7 @@ function App() {
             formData={formData}
             updateForm={updateForm}
             nextStep={nextStep}
+            prevStep={prevStep}
           />
         );
       case 2:

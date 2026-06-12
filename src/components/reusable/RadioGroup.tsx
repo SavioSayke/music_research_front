@@ -1,10 +1,15 @@
 // src/components/reusable/RadioGroup.tsx
+
+import { ERROR_TEXT_CLASSES } from "../../utils/validation";
+
 type Props = {
   label: string;
   name: string;
   options: string[];
   value: string;
   onChange: (value: string) => void;
+  hasError?: boolean;
+  errorMessage?: string;
 };
 
 export const RadioGroup = ({
@@ -13,9 +18,18 @@ export const RadioGroup = ({
   options,
   value,
   onChange,
+  hasError = false,
+  errorMessage,
 }: Props) => (
-  <fieldset className="space-y-2">
+  <fieldset
+    className={`space-y-2 rounded-md ${
+      hasError ? "border border-red-500 p-3" : "border border-transparent"
+    }`}
+    data-invalid-field={hasError ? "true" : undefined}
+    tabIndex={hasError ? -1 : undefined}
+  >
     <legend className="text-lg font-medium text-gray-100">{label}</legend>
+
     {options.map((option) => (
       <label
         key={option}
@@ -32,5 +46,7 @@ export const RadioGroup = ({
         <span className="text-gray-200">{option}</span>
       </label>
     ))}
+
+    {hasError && errorMessage && <p className={ERROR_TEXT_CLASSES}>{errorMessage}</p>}
   </fieldset>
 );

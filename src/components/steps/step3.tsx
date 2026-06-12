@@ -1,6 +1,16 @@
 // src/components/steps/Step3_LikertGeneral.tsx
+
+import { useMemo, useRef, useState } from "react";
+
 import type { FormData } from "../../App";
 import { LikertScale } from "../reusable/LikertScale";
+import {
+  BACK_BUTTON_CLASSES,
+  BUTTON_BLOCKED_CLASSES,
+  BUTTON_ENABLED_CLASSES,
+  REQUIRED_MESSAGE,
+  scrollToFirstInvalid,
+} from "../../utils/validation";
 
 type Props = {
   formData: FormData;
@@ -16,7 +26,7 @@ const questions: { key: keyof FormData["likert"]; text: string }[] = [
   },
   {
     key: "friends",
-    text: "Tendo a ter interesse em consumir as mesmas músicas curtidas e compartilhadas pelos seus amigos.",
+    text: "Tendo a ter interesse em consumir as mesmas músicas curtidas e compartilhadas pelos meus amigos.",
   },
   {
     key: "viral",
@@ -54,49 +64,79 @@ const questions: { key: keyof FormData["likert"]; text: string }[] = [
   },
 ];
 
+const getStep3Errors = (formData: FormData) => {
+  const errors: Partial<Record<keyof FormData["likert"], string>> = {};
+
+  questions.forEach(({ key }) => {
+    if (!formData.likert[key]) {
+      errors[key] = REQUIRED_MESSAGE;
+    }
+  });
+
+  return errors;
+};
+
 export const Step3_LikertGeneral = ({
   formData,
   updateForm,
   nextStep,
   prevStep,
 }: Props) => {
+  const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const errors = useMemo(() => getStep3Errors(formData), [formData]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const shouldShowErrors = submitted;
+
   const handleLikertChange = (key: keyof FormData["likert"], value: number) => {
     updateForm({
       likert: { ...formData.likert, [key]: value },
     });
   };
 
+  const handleNext = () => {
+    setSubmitted(true);
+
+    if (!isFormValid) {
+      requestAnimationFrame(() => scrollToFirstInvalid(formRef.current));
+      return;
+    }
+
+    nextStep();
+  };
+
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center">Suas Percepções</h2>
+    <form ref={formRef} onSubmit={(e) => e.preventDefault()} className="space-y-6">
+      <h2 className="text-2xl font-bold text-center">Suas percepções</h2>
+
       <p className="text-center text-gray-400">
         Responda de 1 (Discordo Totalmente) a 5 (Concordo Totalmente).
       </p>
 
       <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-        {questions.map((q) => (
+        {questions.map((question) => (
           <LikertScale
-            key={q.key}
-            question={q.text}
-            name={q.key}
-            value={formData.likert[q.key]}
-            onChange={(val) => handleLikertChange(q.key, val)}
+            key={question.key}
+            question={question.text}
+            name={question.key}
+            value={formData.likert[question.key]}
+            onChange={(value) => handleLikertChange(question.key, value)}
+            hasError={shouldShowErrors && !!errors[question.key]}
+            errorMessage={errors[question.key]}
           />
         ))}
       </div>
 
       <div className="flex justify-between pt-4">
-        <button
-          type="button"
-          onClick={prevStep}
-          className="bg-gray-600 text-white font-bold py-2 px-6 rounded-md hover:bg-gray-500 transition-all"
-        >
+        <button type="button" onClick={prevStep} className={BACK_BUTTON_CLASSES}>
           Voltar
         </button>
+
         <button
           type="button"
-          onClick={nextStep}
-          className="bg-indigo-600 text-white font-bold py-2 px-6 rounded-md hover:bg-indigo-700 transition-all"
+          onClick={handleNext}
+          aria-disabled={!isFormValid}
+          className={isFormValid ? BUTTON_ENABLED_CLASSES : BUTTON_BLOCKED_CLASSES}
         >
           Iniciar Teste de Músicas
         </button>
