@@ -13,13 +13,15 @@ import {
 } from "../../utils/validation";
 
 type Props = {
-  formData: FormData;
-  updateForm: (data: Partial<FormData>) => void;
-  nextStep: () => void;
-  prevStep: () => void;
-};
+  formData: FormData
+  updateForm: (data: Partial<FormData>) => void
+  nextStep: () => void
+  prevStep: () => void
+  loading?: boolean
+  error?: string | null
+}
 
-const questions: { key: keyof FormData["likert"]; text: string }[] = [
+const questions: { key: string; text: string }[] = [
   {
     key: "influence",
     text: "Sinto minhas decisões e consumos influenciados pelo que vejo nas redes sociais.",
@@ -40,7 +42,10 @@ const questions: { key: keyof FormData["likert"]; text: string }[] = [
     key: "recommended",
     text: "Já escutei uma música que me foi recomendada e passei a escutá-la, mesmo não sendo de meu gosto preferencial.",
   },
-  { key: "multitask", text: "Geralmente, escuto música fazendo alguma coisa." },
+  {
+    key: "multitask",
+    text: "Geralmente, escuto música fazendo alguma coisa.",
+  },
   {
     key: "discovery",
     text: "Tenho descoberto mais músicas diferentes pela recomendação do que por minha busca em si.",
@@ -53,7 +58,10 @@ const questions: { key: keyof FormData["likert"]; text: string }[] = [
     key: "timeDecreased",
     text: "Sinto ter diminuído o tempo que dedico apenas a escutar músicas.",
   },
-  { key: "annoyedFast", text: "Enjoo rápido de músicas que viralizam muito." },
+  {
+    key: "annoyedFast",
+    text: "Enjoo rápido de músicas que viralizam muito.",
+  },
   {
     key: "recognizePart",
     text: "Existem músicas que não conheço por completo, mas reconheço a parte viral se escutar.",
@@ -81,6 +89,8 @@ export const Step3_LikertGeneral = ({
   updateForm,
   nextStep,
   prevStep,
+  loading = false,
+  error = null,
 }: Props) => {
   const [submitted, setSubmitted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -127,6 +137,12 @@ export const Step3_LikertGeneral = ({
         ))}
       </div>
 
+      {error && (
+        <div className="p-3 bg-red-900/50 border border-red-700 rounded-md text-red-200 text-sm">
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-between pt-4">
         <button type="button" onClick={prevStep} className={BACK_BUTTON_CLASSES}>
           Voltar
@@ -138,9 +154,16 @@ export const Step3_LikertGeneral = ({
           aria-disabled={!isFormValid}
           className={isFormValid ? BUTTON_ENABLED_CLASSES : BUTTON_BLOCKED_CLASSES}
         >
-          Iniciar Teste de Músicas
+          {loading ? (
+            <>
+              <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Iniciando...
+            </>
+          ) : (
+            "Iniciar Teste de Músicas"
+          )}
         </button>
       </div>
     </form>
-  );
-};
+  )
+}

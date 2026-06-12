@@ -29,7 +29,7 @@ type Props = {
 type MusicAnswerState = Omit<
   FormData["musicAnswers"][0],
   "songId" | "spotifyId"
->;
+>
 
 const initialMusicAnswer: MusicAnswerState = {
   heardBefore: "",
@@ -39,7 +39,7 @@ const initialMusicAnswer: MusicAnswerState = {
   stoppedToListen: "",
   heard3Songs: "",
   encouragedToListenAlbum: "",
-};
+}
 
 const yesNoOptions = ["Sim", "Não", "Não sei"];
 
@@ -74,8 +74,8 @@ export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
   const shouldShowErrors = submitted;
 
   const handleChange = (key: keyof MusicAnswerState, value: string) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
-  };
+    setAnswers((prev) => ({ ...prev, [key]: value }))
+  }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -87,11 +87,11 @@ export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
     }
 
     onSubmit({
-      songId: song.id,
-      spotifyId: song.spotifyId,
+      songId: currentIndex,
+      spotifyId: stimulus.trackId,
       ...answers,
-    });
-  };
+    })
+  }
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
@@ -99,9 +99,16 @@ export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
 
       <p className="text-center text-gray-400">
         Por favor, ouça a música abaixo antes de responder.
+        <br />
+        <span className="text-sm">
+          Música {currentIndex + 1} de {totalStimuli}
+        </span>
       </p>
 
-      <SpotifyPlayer trackId={song.spotifyId} />
+      <SpotifyPlayer
+        trackId={stimulus.trackId}
+        onPlay={(trackId) => onPlay(trackId, currentIndex)}
+      />
 
       <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
         {questions.map((question) => (
@@ -128,9 +135,9 @@ export const Step4_MusicPlayer = ({ song, onSubmit, prevStep }: Props) => {
           aria-disabled={!isFormValid}
           className={isFormValid ? BUTTON_ENABLED_CLASSES : BUTTON_BLOCKED_CLASSES}
         >
-          Próxima Música
+          {currentIndex < totalStimuli - 1 ? "Próxima Música" : "Finalizar"}
         </button>
       </div>
     </form>
-  );
-};
+  )
+}
