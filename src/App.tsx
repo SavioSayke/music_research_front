@@ -163,7 +163,7 @@ function App() {
 
   const handlePlay = (trackId: string, orderIndex: number) => {
     if (session.sessionId) {
-      session.logPlay(session.sessionId, trackId, orderIndex)
+        session.logPlay(session.sessionId, trackId, orderIndex)
     }
   }
 
