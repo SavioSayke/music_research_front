@@ -5,7 +5,7 @@ type Props = {
   formData: FormData;
 };
 
-export const Step5_ThankYou = ({ formData }: Props) => {
+export const Step5_ThankYou = ({}: Props) => {
   return (
     <div className="space-y-6 text-center">
       <h2 className="text-3xl font-bold text-green-400">
