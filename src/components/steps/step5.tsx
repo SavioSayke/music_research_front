@@ -17,12 +17,12 @@ export const Step5_ThankYou = ({ formData }: Props) => {
       </p>
 
       {/* Opcional: Bloco de depuração para você ver os dados coletados */}
-      <div className="text-left bg-gray-900 p-4 rounded-md max-h-96 overflow-auto">
+      {/*<div className="text-left bg-gray-900 p-4 rounded-md max-h-96 overflow-auto">
         <h4 className="font-semibold mb-2">Dados Coletados (Debug):</h4>
         <pre className="text-xs text-gray-400">
           {JSON.stringify(formData, null, 2)}
         </pre>
-      </div>
+      </div> */}
     </div>
   );
 };

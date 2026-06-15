@@ -138,9 +138,10 @@ function App() {
         musicTime: formData.musicTime,
       }
 
-      await session.initSession(demographics)
+      const result = await session.initSession(demographics)
+      const sessionId = result?.session_id
 
-      if (session.sessionId) {
+      if (sessionId) {
         const likertResponses = LIKERT_KEYS
           .filter((key) => formData.likert[key] !== undefined)
           .map((key) => ({
@@ -149,7 +150,7 @@ function App() {
           }))
 
         if (likertResponses.length > 0) {
-          await session.logResponses(session.sessionId, likertResponses)
+          await session.logResponses(sessionId, likertResponses)
         }
       }
 
@@ -163,7 +164,7 @@ function App() {
 
   const handlePlay = (trackId: string, orderIndex: number) => {
     if (session.sessionId) {
-      session.logPlay(session.sessionId, trackId, orderIndex)
+        session.logPlay(session.sessionId, trackId, orderIndex)
     }
   }
 

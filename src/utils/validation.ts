@@ -37,7 +37,7 @@ export const onlyLettersAndSpaces = (value: string, maxLength: number) =>
 
 export const onlyLettersUppercase = (value: string, maxLength: number) =>
   Array.from(value)
-    .filter((char) => /^[\p{L}]$/u.test(char))
+    .filter((char) => /^[\p{L}\s]$/u.test(char))
     .join("")
     .toUpperCase()
     .slice(0, maxLength);

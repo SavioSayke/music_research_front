@@ -122,6 +122,10 @@ export const Step1_UserInfo = ({
     updateLocation(formData.city, onlyLettersUppercase(value, 2));
   };
 
+  const handleInstitutionChange = (value: string) => {
+    updateForm({ institution: onlyLettersUppercase(value, 32) });
+  };
+
   const handleNext = () => {
     setSubmitted(true);
 
@@ -204,7 +208,8 @@ export const Step1_UserInfo = ({
       <FormInput
         label="Instituição (Opcional)"
         value={formData.institution}
-        onChange={(value) => updateForm({ institution: value })}
+        onChange={handleInstitutionChange}
+        maxLength={32}
       />
 
       <div className="flex justify-between pt-4">
